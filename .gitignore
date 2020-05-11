@@ -1,1 +1,8 @@
 /.gradle/
+/build/
+/.idea/
+/gradle/
+*.puml
+/settings.gradle
+/gradlew.bat
+/gradlew
