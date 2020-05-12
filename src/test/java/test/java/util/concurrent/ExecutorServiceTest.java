@@ -3,10 +3,7 @@ package test.java.util.concurrent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class ExecutorServiceTest {
@@ -156,6 +153,37 @@ public class ExecutorServiceTest {
     }
 
 
+    @Test
+    void createPoolByThreadPoolExecutor() throws InterruptedException {
+        int CORE_POOL_SIZE = 5;
+        int MAX_POOL_SIZE = 10;
+        int QUEUE_CAPACITY = 100;
+        long KEEP_ALIVE_TIME = 1L;
+
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE,
+                MAX_POOL_SIZE,
+                KEEP_ALIVE_TIME,
+                TimeUnit.MINUTES,
+                new ArrayBlockingQueue<>(QUEUE_CAPACITY),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+
+        Runnable task = ()-> {
+            System.out.println(Thread.currentThread() + " Start. Time = " + new Date());
+            try {
+                Thread.sleep(5000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread() + " End. Time = " + new Date());
+        };
+
+        for (int i = 0; i < 10; i++) {
+            threadPoolExecutor.execute(task);
+        }
+
+        threadPoolExecutor.shutdown();
+        threadPoolExecutor.awaitTermination(1, TimeUnit.HOURS);
+    }
 
 
 }
