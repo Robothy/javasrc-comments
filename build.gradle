@@ -30,3 +30,15 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
+
+tasks {
+    javadoc {
+        options.encoding = "UTF-8"
+    }
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+    compileTestJava {
+        options.encoding = "UTF-8"
+    }
+}
