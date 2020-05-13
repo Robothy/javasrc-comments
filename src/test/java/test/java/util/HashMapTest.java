@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.omg.CORBA.INTERNAL;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -36,13 +37,11 @@ class HashMapTest {
     }
 
     // 之所以将底层数组的长度设置为 2 的 n 次方，是为了提高将元素 key 的散列值映射到到数组上（table）的效率。
-    // 元素 put 到 HashMap 中的时候，先对 key 求 hash，然后根据 hash 的值来确定存放到数组中的位置。
-    // 通常可以采用 hash % table.length 的值来确定数组的下标。这个计算更高效的一种算法是 hash&(table.length - 1)，
-    // 而要保证这种算法可行的前提是 (table.length - 1) 的二进制表示的低位部分全是 1，高位部分全是 0。
+    // 元素被 put 到 HashMap 中的时候，先对 key 求 hash，然后根据 hash % table.length 的值来确定存放到数组中的位置。
+    // 而 hash % table.length 的一种更高效的替代计算方式是 hash&(table.length - 1)，前提是 (table.length - 1) 的
+    // 二进制表示的低位部分全是 1，高位部分全是 0。
     // 例如: 0x0000_1111, 0x0011_1111, 0x0000_0111
-    // 这样的值恰好为 2 的 n 次方减 1.
-    // 所以，为了使 hash&(table.length - 1) 可用，table.length 就得是 2 的 n 次方。
-    // 将底层数组长度设置为 2 的 n 次方的目的是高效地为新增的元素选择 table 中的位置。
+    // 这样的值恰好为 2 的 n 次方减 1。所以 table.length 或者说哈希桶的数量是 2 的 n 次方。
     @Test
     void capacity(){
 
@@ -63,4 +62,18 @@ class HashMapTest {
         }
     }
 
+
+    // put(K, V) 返回的值是与 K 关联的上一个 V
+    @Test
+    void put(){
+        HashMap<String, Integer> map = new HashMap<>();
+
+        // 此时不存在 key = "a"，所以 put 返回的值是 null
+        Integer a = map.put("a", 1);
+        Assertions.assertNull(a);
+
+        // 此时存在 key = "a" 对应的 value = 1, 所以 put 方法返回的值是 1
+        a = map.put("a", 2);
+        Assertions.assertEquals(1, a);
+    }
 }

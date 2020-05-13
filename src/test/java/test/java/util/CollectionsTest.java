@@ -2,10 +2,7 @@ package test.java.util;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +37,16 @@ class CollectionsTest {
 
     @Test
     void binarySearchWithComparator() {
+//        ArrayList<String> strings = new ArrayList<>();
+//        strings.add("12");
+//        strings.add("34");
+//        String[] is = (String[])(strings.toArray());
+//        System.out.println(is);
 
+        Integer[] ints = new Integer[]{1, 2, 3};
+        Object[] objs = ints;
+        ints = (Integer[]) objs;
+        System.out.println(ints);
     }
 
     @Test
