@@ -1,5 +1,6 @@
 package test.java.util;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -334,4 +335,76 @@ class CollectionsTest {
     @Test
     void asLifoQueue() {
     }
+
+    // toArray(Object[] arrayToFill) 是浅复制元素返回，
+    // toArray 可以认为是 List 结构和数组结构的桥梁。
+    @Test
+    void toArray() {
+        List<Element> elementList = new ArrayList<>();
+        elementList.add(new Element("Hello"));
+        Element[] elementArray = elementList.toArray(new Element[0]);
+        Assertions.assertEquals(elementList.get(0), elementArray[0]);
+        Assertions.assertSame(elementList.get(0), elementArray[0]);
+
+        elementArray[0].name = "World";
+        Assertions.assertEquals(elementList.get(0), elementArray[0]);
+    }
+
+    // toArray() 不能进行强制转化，至于为什么，还没有搞清楚
+    @Test
+    void toArray2() {
+
+        //List<Integer> integers = Arrays.asList(1000, 1002, 1003);
+        List<Integer> integers = new ArrayList<>();
+        integers.add(1000);
+        integers.add(1002);
+        integers.add(1003);
+        Integer[] arr = (Integer[]) integers.toArray();
+
+        Object[] newArray = new Object[]{"AAA","BBB"};
+        String[]q=(String[])(newArray);
+
+
+        List<Element> elementList = new ArrayList<>();
+        elementList.add(new Element("hello"));
+
+        Assertions.assertThrows(ClassCastException.class, ()->{
+            Element[] elementArray = (Element[]) elementList.toArray(); // 不能直接强转数组
+        });
+
+        // 但是可以对单个元素进行强转
+        Element element = (Element) elementList.toArray()[0];
+        Assertions.assertEquals("hello", element.name);
+
+        // 所以，要从 Collection 中获取集合的数组结构，可以有两种方式
+
+        // 方式一，调用 toArray() 的变体 toArray(Object[] arrayToFill)
+        Element[] elementArray = elementList.toArray(new Element[0]);
+        Assertions.assertEquals("hello", elementArray[0].name);
+
+        // 方式二，调用 toArray()，然后通过循环对返回的数组中的各个元素进行强转
+        elementArray = new Element[elementList.size()];
+        Object[] objectArray = elementList.toArray();
+        for(int i=0; i<elementList.size(); i++){
+            elementArray[i] = (Element)objectArray[i];
+        }
+        Assertions.assertEquals("hello", elementArray[0].name);
+
+    }
+
+    static class Element {
+        String name;
+
+        Element(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Element)) return false;
+            if (this.name == null) return false;
+            return this.name.equals(((Element) obj).name);
+        }
+    }
+
 }
