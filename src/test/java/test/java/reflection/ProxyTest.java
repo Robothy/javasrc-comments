@@ -1,11 +1,10 @@
 package test.java.reflection;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +26,6 @@ public class ProxyTest {
     //通过动态代理创建对象
     @Test
     void createInstanceByProxy() {
-
 
         Object o = Proxy.newProxyInstance(handler.getClass().getClassLoader(), new Class[]{Readable.class, Writable.class}, handler);
         Readable o1 = (Readable) o;

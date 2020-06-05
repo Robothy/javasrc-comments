@@ -3,10 +3,7 @@ package test.java.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class ListTest {
 
@@ -23,9 +20,6 @@ public class ListTest {
 
         // ListIterator.remove 方法依赖于 next 或 previous
         Assertions.assertThrows(IllegalStateException.class, integerListIterator::remove);
-
-        // ListIterator.add 方法也依赖于 next 或者 previous
-        integerListIterator.add();
 
         integerListIterator.next();   // 迭代器从第 1 个元素左侧移动到了第 1 个元素右侧
         integerListIterator.remove(); // 移除了第一个元素
@@ -45,13 +39,39 @@ public class ListTest {
         // 例如，两次调用 remove 中间没有调用 next 或者 previous 将抛出异常
         Assertions.assertThrows(IllegalStateException.class, integerListIterator::remove);
 
+        // add 方法总是在迭代器的左侧添加元素
+        integerListIterator.add(6); // 2|4 5 -> 2 6|4 5
+        Assertions.assertArrayEquals(new Integer[]{2, 6, 4, 5}, integerList.toArray(new Integer[0]));
 
-        integerListIterator.add(6);
-        integerListIterator.add(7);
-        integerListIterator.add(8);
-        integerListIterator.add(9);
+        // 并且 add 方法可以连续多次添加
+        integerListIterator.add(7); // 2 6 7|4 5
+        Assertions.assertArrayEquals(new Integer[]{2, 6, 7, 4, 5}, integerList.toArray(new Integer[0]));
 
-        System.out.println(integerList);
+        integerListIterator.next(); // 2 6 7 4|5
+        integerListIterator.add(8); // 2 6 7 4 8|5
+        Assertions.assertArrayEquals(new Integer[]{2, 6, 7, 4, 8, 5}, integerList.toArray(new Integer[0]));
+
+        integerListIterator.previous(); // 2 6 7 4|8 5
+        integerListIterator.add(9); // 2 6 7 4 9|8 5
+        Assertions.assertArrayEquals(new Integer[]{2, 6, 7, 4, 9, 8, 5}, integerList.toArray(new Integer[0]));
     }
+
+    @Test
+    void modifyListWhenIterate(){
+        List<Integer> integerList = new ArrayList<>();
+        integerList.add(1);
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(4);
+
+        ListIterator<Integer> integerListIterator = integerList.listIterator();
+        integerListIterator.next();
+        integerList.add(5);
+        //若被另一迭代器或自身某个方法修改，抛出 ConcurrentModificationException
+        Assertions.assertThrows(ConcurrentModificationException.class, integerListIterator::next);
+
+
+    }
+
 
 }

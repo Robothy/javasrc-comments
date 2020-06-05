@@ -3,6 +3,7 @@ package test.java.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.BitSet;
 
 // BitSet 可以认为是一种存储比特位的数组，它的数据结构是一个 long 数组
@@ -22,6 +23,12 @@ public class BitSetTest {
 
         bitSet.set(0); // 将 0 位置设置为 "open"
         Assertions.assertTrue(bitSet.get(0)); // 此时 get(0) 返回 true
+
+        bitSet.set(1);
+        bitSet.set(2);
+        bitSet.set(3);
+        bitSet.clear(1);
+        System.out.println(Arrays.toString(bitSet.toByteArray()));
     }
 
 }

@@ -4,14 +4,42 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.omg.CORBA.INTERNAL;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 class HashMapTest {
+
+    @Test
+    void test(){
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, "One");
+        map.put(2, "Two");
+        map.put(3, "Three");
+
+        // compute 将计算一个新值，替换旧值，返回 get(key)
+        String compute = map.compute(1, (k, v) -> k + v); // (k, v) -> k + v 返回 "1One"，替换原来的 "One"
+        Assertions.assertEquals("1One", compute);
+        Assertions.assertEquals("1One", map.get(1));
+
+        // 若传入的 key 不存在，传给函数的参数为 key 和 null。
+        // 并将 key 和计算出来的结果组成 entry 插入到 map中。
+        compute = map.compute(4, (k, v) -> k + v);
+        Assertions.assertEquals("4null", compute);
+        Assertions.assertEquals("4null", map.get(4));
+        Assertions.assertEquals(4, map.size()); // k = 4, v = "4null"  被插入，此时 map 中有 4 个 entry
+
+        // 若函数的计算结果为 null，则删除 key，返回 get(key)，也就是null
+        compute = map.compute(1, (k, v)-> null); // key = 1 将被删除
+        Assertions.assertNull(compute);
+        Assertions.assertEquals(3, map.size()); // 此时 map 中只有 3 个元素
+
+        // 此时 1 不存在所以将 key = 1, value = "1One" 插入 map 中
+        map.computeIfAbsent(1, k-> k + "One");
+        Assertions.assertEquals("1One", map.get(1));
+
+
+    }
 
     // HashMap 通过 tableSizeFor 方法来保证底层数组的长度总是 2 的 n 次方
     @Test
