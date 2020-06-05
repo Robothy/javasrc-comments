@@ -68,7 +68,6 @@ public class ClassTest {
 
         Method getName = Student.class.getMethod("getName");
         assertEquals("Bob", getName.invoke(student));
-
     }
 
     // 获取属性并设置对象的属性值
